@@ -1,0 +1,27 @@
+name: SLSA Attest Binary
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        type: string
+      subject-name:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  attestations: write
+  contents: read
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: .
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ inputs.subject-name }}
